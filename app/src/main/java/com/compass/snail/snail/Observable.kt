@@ -2,6 +2,8 @@
 
 package com.compass.snail.snail
 
+import android.os.Handler
+import android.os.Looper
 
 open class Observable<T> : IObservable<T> {
     private var isStopped = false
@@ -28,19 +30,18 @@ open class Observable<T> : IObservable<T> {
     }
 
     private fun on(event: Event<T>) {
+        if (isStopped) return
+
         event.next?.let {
-            if (isStopped) { return }
             eventHandlers.forEach { handler ->
                 fire(handler.first, handler.second, event)
             }
         }
-        event.done?.let {
-            if (isStopped) { return }
+        event.error?.let {
             eventHandlers.forEach { handler -> fire(handler.first, handler.second, event) }
             isStopped = true
         }
         event.done?.let {
-            if (!isStopped) { return }
             eventHandlers.forEach { handler -> fire(handler.first, handler.second, event) }
             isStopped = true
         }
@@ -55,6 +56,14 @@ open class Observable<T> : IObservable<T> {
     }
 
     fun fire(thread: EventThread?, handler: (Event<T>) -> Unit, event: Event<T>) {
+        thread?.let {
+            if (it == EventThread.MAIN) {
+                Handler(Looper.getMainLooper()).post({
+                    handler(event)
+                })
+                return
+            }
+        }
         handler(event)
     }
 }

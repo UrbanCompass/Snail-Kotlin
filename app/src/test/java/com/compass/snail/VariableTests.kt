@@ -6,7 +6,6 @@ import com.compass.snail.snail.Variable
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-
 class VariableTests {
     @Test
     fun testVariableChanges() {
@@ -20,5 +19,24 @@ class VariableTests {
         assertEquals(events[0], "a")
         assertEquals(events[1], "b")
         assertEquals(subject.value, "b")
+    }
+
+    @Test
+    fun testVariableNotifiesOnSubscribe() {
+        val subject = Variable("Initial")
+        subject.value = "new"
+        var result: String? = null
+
+        subject.asObservable().subscribeOn(next = { value -> result = value })
+
+        assertEquals("new", result)
+    }
+
+    @Test
+    fun testVariableNotifiesInitialOnSubscribe() {
+        val subject = Variable("initial")
+        var result: String? = null
+        subject.asObservable().subscribeOn(next = { value -> result = value })
+        assertEquals("initial", result)
     }
 }
