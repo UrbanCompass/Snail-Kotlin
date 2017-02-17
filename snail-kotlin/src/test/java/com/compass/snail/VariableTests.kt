@@ -1,8 +1,7 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.snail
+package com.compass.compasslibrary.snail
 
-import com.compass.snail.snail.Variable
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -11,9 +10,7 @@ class VariableTests {
     fun testVariableChanges() {
         var events: MutableList<String?> = mutableListOf()
         val subject = Variable<String?>(null)
-        subject.asObservable().subscribeOn(next = {
-            value -> events.add(value)
-        })
+        subject.asObservable().subscribe(next = { events.add(it) })
         subject.value = "a"
         subject.value = "b"
         assertEquals(events[0], "a")
@@ -27,8 +24,7 @@ class VariableTests {
         subject.value = "new"
         var result: String? = null
 
-        subject.asObservable().subscribeOn(next = { value -> result = value })
-
+        subject.asObservable().subscribe(next = { result = it })
         assertEquals("new", result)
     }
 
@@ -36,7 +32,7 @@ class VariableTests {
     fun testVariableNotifiesInitialOnSubscribe() {
         val subject = Variable("initial")
         var result: String? = null
-        subject.asObservable().subscribeOn(next = { value -> result = value })
+        subject.asObservable().subscribe(next = { result = it })
         assertEquals("initial", result)
     }
 }

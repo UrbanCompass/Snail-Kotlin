@@ -1,6 +1,6 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.snail.snail
+package com.compass.compasslibrary.snail
 
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock

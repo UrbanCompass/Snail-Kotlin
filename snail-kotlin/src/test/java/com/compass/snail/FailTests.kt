@@ -1,9 +1,7 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.snail
+package com.compass.compasslibrary.snail
 
-import com.compass.snail.snail.Fail
-import com.compass.snail.snail.Observable
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -20,30 +18,16 @@ class FailTests {
     }
 
     @Test
-    fun testEvent() {
-        var more: MutableList<String> = mutableListOf()
-        subject?.subscribe { event ->
-            event.next?.let { string -> more.add(string) }
-        }
-        subject?.next("1")
-        assertEquals(0, more.size)
-    }
-
-    @Test
     fun testOnNext() {
         var more: MutableList<String> = mutableListOf()
-        subject?.subscribeOn(next = { string ->
-            more.add(string)
-        })
+        subject?.subscribe(next = { more.add(it) })
         subject?.next("1")
         assertEquals(0, more.size)
     }
 
     @Test
     fun testOnError() {
-        subject?.subscribeOn(error = { error ->
-            this.error = error
-        })
-        assert(this.error is RuntimeException)
+        subject?.subscribe(error = { error = it })
+        assert(error is RuntimeException)
     }
 }

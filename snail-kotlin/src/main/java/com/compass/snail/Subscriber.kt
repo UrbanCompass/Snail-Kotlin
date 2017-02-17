@@ -2,6 +2,4 @@
 
 package com.compass.compasslibrary.snail
 
-enum class EventThread {
-    MAIN, OBSERVABLE;
-}
+data class Subscriber<T>(val thread: EventThread?, val eventHandler: (Event<T>) -> Unit)
