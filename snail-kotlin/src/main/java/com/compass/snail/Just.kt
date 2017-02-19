@@ -1,6 +1,8 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.compasslibrary.snail
+package com.compass.snail
+
+import com.compass.snail.Event
 
 class Just<T>(private val value: T) : Observable<T>() {
     override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {

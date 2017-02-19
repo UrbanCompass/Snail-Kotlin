@@ -1,6 +1,6 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.compasslibrary.snail
+package com.compass.snail
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

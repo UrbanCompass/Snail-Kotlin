@@ -1,6 +1,6 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.compasslibrary.snail
+package com.compass.snail
 
 interface IObservable<T> {
     fun subscribe(thread: EventThread? = EventThread.OBSERVABLE, next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null)
