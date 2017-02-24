@@ -1,0 +1,13 @@
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter android-25
+    - echo y | android update sdk --no-ui --all --filter build-tools-25.1.0
+test:
+  override:
+    - ./scripts/test.sh
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - mkdir -p $CIRCLE_TEST_REPORTS/lint/
+    - find . -type f -regex ".*/build/outputs/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/lint/ \;
+    - find . -type f -regex ".*/build/outputs/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/lint/ \;
