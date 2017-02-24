@@ -2,8 +2,8 @@
 
 package com.compass.snail
 
-import com.compass.snail.snail.Just
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class JustTests {
@@ -11,19 +11,15 @@ class JustTests {
     fun testJustOnNext() {
         var result: Int? = null
         val subject = Just(1)
-        subject.subscribeOn(next = { value ->
-            result = value
-        })
+        subject.subscribe(next = { result = it })
         assertEquals(1, result)
     }
 
     @Test
     fun testJustEvent() {
-        var result: Int? = null
+        var done = false
         val subject = Just(1)
-        subject.subscribe { event ->
-            event.next?.let { result = it }
-        }
-        assertEquals(1, result)
+        subject.subscribe(done = { done = true })
+        assertTrue(done)
     }
 }

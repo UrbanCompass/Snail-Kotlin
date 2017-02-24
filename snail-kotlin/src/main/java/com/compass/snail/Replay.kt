@@ -1,17 +1,14 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.snail.snail
+package com.compass.snail
+
+import com.compass.snail.Event
 
 class Replay<T>(val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
-    override fun subscribe(thread: EventThread?, handler: (Event<T>) -> Unit) {
-        super.subscribe(thread, handler)
-        replay(thread, handler)
-    }
-
-    override fun subscribeOn(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
-        super.subscribeOn(thread, next, error, done)
+    override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+        super.subscribe(thread, next, error, done)
         replay(thread, createHandler(next, error, done))
     }
 
@@ -22,6 +19,6 @@ class Replay<T>(val threshold: Int) : Observable<T>() {
     }
 
     private fun replay(thread: EventThread?, handler: (Event<T>) -> Unit) {
-        values.forEach { value -> fire(thread, handler, Event(next = value)) }
+        values.forEach { notify(Subscriber(thread, handler), Event(next = it)) }
     }
 }

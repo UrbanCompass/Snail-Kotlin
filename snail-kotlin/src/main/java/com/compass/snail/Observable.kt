@@ -1,20 +1,21 @@
 //  Copyright © 2016 Compass. All rights reserved.
 
-package com.compass.snail.snail
+package com.compass.snail
 
 import android.os.Handler
 import android.os.Looper
+import com.compass.snail.Event
 
 open class Observable<T> : IObservable<T> {
-    private var isStopped = false
-    var eventHandlers: MutableList<Pair<EventThread?, (Event<T>) -> Unit>> = mutableListOf()
+    var stoppedEvent: Event<T>? = null
+    var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
-    override fun subscribe(thread: EventThread?, handler: (Event<T>) -> Unit) {
-        eventHandlers.add(Pair(thread, handler))
-    }
-
-    override fun subscribeOn(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
-        eventHandlers.add(Pair(thread, createHandler(next, error, done)))
+    override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+        stoppedEvent?.let {
+            notify(Subscriber(thread, createHandler(next, error, done)), it)
+            return
+        }
+        subscribers.add(Subscriber(thread, createHandler(next, error, done)))
     }
 
     override fun next(value: T) {
@@ -30,24 +31,22 @@ open class Observable<T> : IObservable<T> {
     }
 
     private fun on(event: Event<T>) {
-        if (isStopped) return
+        if (stoppedEvent != null) return
 
         event.next?.let {
-            eventHandlers.forEach { handler ->
-                fire(handler.first, handler.second, event)
-            }
+            subscribers.forEach { notify(it, event) }
         }
         event.error?.let {
-            eventHandlers.forEach { handler -> fire(handler.first, handler.second, event) }
-            isStopped = true
+            subscribers.forEach { notify(it, event) }
+            stoppedEvent = event
         }
         event.done?.let {
-            eventHandlers.forEach { handler -> fire(handler.first, handler.second, event) }
-            isStopped = true
+            subscribers.forEach { notify(it, event) }
+            stoppedEvent = event
         }
     }
 
-    fun createHandler(next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null): (Event<T>) -> Unit {
+    protected fun createHandler(next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null): (Event<T>) -> Unit {
         return { event ->
             event.next?.let { next?.invoke(it) }
             event.error?.let { error?.invoke(it) }
@@ -55,15 +54,19 @@ open class Observable<T> : IObservable<T> {
         }
     }
 
-    fun fire(thread: EventThread?, handler: (Event<T>) -> Unit, event: Event<T>) {
-        thread?.let {
-            if (it == EventThread.MAIN) {
-                Handler(Looper.getMainLooper()).post({
-                    handler(event)
-                })
-                return
-            }
+    fun notify(subscriber: Subscriber<T>, event: Event<T>) {
+        if (subscriber.thread == EventThread.MAIN) {
+            Handler(Looper.getMainLooper()).post { safeNotify(subscriber, event) }
+        } else {
+            safeNotify(subscriber, event)
         }
-        handler(event)
+    }
+
+    private fun safeNotify(subscriber: Subscriber<T>, event: Event<T>) {
+        try {
+            subscriber.eventHandler(event)
+        } catch (e: Exception) {
+            subscribers.remove(subscriber)
+        }
     }
 }

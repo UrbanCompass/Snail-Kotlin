@@ -2,7 +2,6 @@
 
 package com.compass.snail
 
-import com.compass.snail.snail.Observable
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -20,25 +19,17 @@ class ObservableTests {
         strings = mutableListOf()
         error = null
         done = null
-        subject?.subscribe { event ->
-            event.next?.let { this.strings?.add(it) }
-            event.error?.let { error = it }
-            event.done?.let { done = true }
-        }
+        subject?.subscribe(
+            next = { strings?.add(it) },
+            error = { error = it },
+            done = { done = true }
+        )
     }
 
     @Test
-    fun testEvent() {
+    fun testNext() {
         subject?.next("1")
         assertEquals("1", strings?.firstOrNull())
-    }
-
-    @Test
-    fun testOnNext() {
-        var more = mutableListOf<String>()
-        subject?.subscribeOn(next = { more.add(it) })
-        subject?.next("1")
-        assertEquals("1", more.firstOrNull())
     }
 
     @Test
@@ -70,7 +61,7 @@ class ObservableTests {
     @Test
     fun testMultipleSubscribers() {
         var more = mutableListOf<String>()
-        subject?.subscribeOn(next = { more.add(it) })
+        subject?.subscribe(next = { more.add(it) })
         subject?.next("1")
         assertNotNull(more.firstOrNull())
         assertEquals(strings?.firstOrNull(), more.firstOrNull())
