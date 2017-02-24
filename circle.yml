@@ -1,0 +1,9 @@
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter android-25
+    - echo y | android update sdk --no-ui --all --filter build-tools-25.1.0
+    - echo y | android update sdk --no-ui --all --filter extra-android-m2repository
+    - echo y | android update sdk --no-ui --all --filter extra-google-m2repository
+test:
+  override:
+    - ./scripts/test.sh
