@@ -5,10 +5,9 @@ dependencies:
 test:
   override:
     - ./scripts/test.sh
-  after_sccess:
-    — bash <(curl -s https://codecov.io/bash)
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/test-results/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
     - mkdir -p $CIRCLE_TEST_REPORTS/lint/
     - find . -type f -regex ".*/build/outputs/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/lint/ \;
+    — bash <(curl -s https://codecov.io/bash)
