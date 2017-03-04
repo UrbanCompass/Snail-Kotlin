@@ -1,11 +1,14 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.dcendents.android-maven'
 
 ext {
     PUBLISH_GROUP_ID = 'com.compass.snail'
     PUBLISH_ARTIFACT_ID = 'snail'
     PUBLISH_VERSION = '0.0.1'
 }
+
+group='com.github.urbancompass'
 
 android {
     compileSdkVersion 25
@@ -29,8 +32,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile 'junit:junit:4.12'
 }
 
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
