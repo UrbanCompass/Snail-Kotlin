@@ -2,8 +2,6 @@
 
 package com.compass.snail
 
-import com.compass.snail.Event
-
 class Replay<T>(val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 

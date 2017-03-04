@@ -4,7 +4,6 @@ package com.compass.snail
 
 import android.os.Handler
 import android.os.Looper
-import com.compass.snail.Event
 
 open class Observable<T> : IObservable<T> {
     var stoppedEvent: Event<T>? = null
