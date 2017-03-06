@@ -6,8 +6,7 @@ Download
 --------
 You can download a jar from GitHub's [releases page](https://github.com/UrbanCompass/Snail-Kotlin/releases).
 
-Or use Gradle:
-
+Jitpack
 ```gradle
 allprojects {
  repositories {
@@ -17,7 +16,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.urbancompass:snail-kotlin:0.0.1'
+  compile 'com.github.urbancompass:snail-kotlin:0.0.2'
 }
 ```
 
