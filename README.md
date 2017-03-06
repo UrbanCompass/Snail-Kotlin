@@ -4,7 +4,7 @@ A light-weight observables framework, also available in [Swift](https://github.c
 
 Download
 --------
-You can download a jar from GitHub's [releases page][1].
+You can download a jar from GitHub's [releases page](https://github.com/UrbanCompass/Snail-Kotlin/releases).
 
 Or use Gradle:
 
