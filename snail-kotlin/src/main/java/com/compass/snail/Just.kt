@@ -2,8 +2,6 @@
 
 package com.compass.snail
 
-import com.compass.snail.Event
-
 class Just<T>(private val value: T) : Observable<T>() {
     override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
         notify(Subscriber(thread, createHandler(next, error, done)), Event(next = value))
