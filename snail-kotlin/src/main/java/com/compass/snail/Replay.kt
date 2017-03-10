@@ -2,7 +2,7 @@
 
 package com.compass.snail
 
-class Replay<T>(val threshold: Int) : Observable<T>() {
+open class Replay<T>(val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
     override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {

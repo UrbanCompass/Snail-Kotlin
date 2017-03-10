@@ -5,7 +5,7 @@ package com.compass.snail
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
-class Variable<T>(private var _value: T) {
+open class Variable<T>(private var _value: T) {
     private val subject: Replay<T> = Replay(1)
     private val lock = ReentrantLock()
 
