@@ -20,9 +20,9 @@ class ObservableTests {
         error = null
         done = null
         subject?.subscribe(
-                next = { strings?.add(it) },
-                error = { error = it },
-                done = { done = true }
+            next = { strings?.add(it) },
+            error = { error = it },
+            done = { done = true }
         )
     }
 
