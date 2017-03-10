@@ -2,4 +2,4 @@
 
 package com.compass.snail
 
-data class Subscriber<T>(val thread: EventThread?, val eventHandler: (Event<T>) -> Unit)
+data class Subscriber<in T>(val thread: EventThread?, val eventHandler: (Event<T>) -> Unit)

@@ -8,7 +8,7 @@ import org.junit.Test
 class VariableTests {
     @Test
     fun testVariableChanges() {
-        var events: MutableList<String?> = mutableListOf()
+        val events = mutableListOf<String?>()
         val subject = Variable<String?>(null)
         subject.asObservable().subscribe(next = { events.add(it) })
         subject.value = "a"
