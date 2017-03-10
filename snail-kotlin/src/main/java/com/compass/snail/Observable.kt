@@ -29,6 +29,10 @@ open class Observable<T> : IObservable<T> {
         on(Event(done = true))
     }
 
+    override fun removeSubscribers() {
+        subscribers.clear()
+    }
+
     private fun on(event: Event<T>) {
         if (stoppedEvent != null) return
 

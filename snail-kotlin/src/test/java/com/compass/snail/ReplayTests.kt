@@ -16,7 +16,7 @@ class ReplayTests {
 
     @Test
     fun testOnNext() {
-        var strings = mutableListOf<String>()
+        val strings = mutableListOf<String>()
         subject?.next("1")
         subject?.next("2")
         subject?.subscribe(next = { strings.add(it) })
@@ -27,8 +27,8 @@ class ReplayTests {
 
     @Test
     fun testMultipleSubscribers() {
-        var a = mutableListOf<String>()
-        var b = mutableListOf<String>()
+        val a = mutableListOf<String>()
+        val b = mutableListOf<String>()
         subject?.next("1")
         subject?.next("2")
         subject?.subscribe(next = { a.add(it) })

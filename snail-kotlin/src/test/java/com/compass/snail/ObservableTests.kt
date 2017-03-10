@@ -20,9 +20,9 @@ class ObservableTests {
         error = null
         done = null
         subject?.subscribe(
-            next = { strings?.add(it) },
-            error = { error = it },
-            done = { done = true }
+                next = { strings?.add(it) },
+                error = { error = it },
+                done = { done = true }
         )
     }
 
@@ -59,8 +59,20 @@ class ObservableTests {
     }
 
     @Test
+    fun testRemoveSubscribers() {
+        subject?.next("1")
+        subject?.next("2")
+        subject?.removeSubscribers()
+        subject?.next("3")
+
+        assertEquals(2, strings?.size)
+        assertEquals("1", strings?.get(0))
+        assertEquals("2", strings?.get(1))
+    }
+
+    @Test
     fun testMultipleSubscribers() {
-        var more = mutableListOf<String>()
+        val more = mutableListOf<String>()
         subject?.subscribe(next = { more.add(it) })
         subject?.next("1")
         assertNotNull(more.firstOrNull())

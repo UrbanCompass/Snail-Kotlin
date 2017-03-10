@@ -7,4 +7,5 @@ interface IObservable<T> {
     fun next(value: T)
     fun error(error: Throwable)
     fun done()
+    fun removeSubscribers()
 }

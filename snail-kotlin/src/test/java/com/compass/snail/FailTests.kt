@@ -19,7 +19,7 @@ class FailTests {
 
     @Test
     fun testOnNext() {
-        var more: MutableList<String> = mutableListOf()
+        val more: MutableList<String> = mutableListOf()
         subject?.subscribe(next = { more.add(it) })
         subject?.next("1")
         assertEquals(0, more.size)
