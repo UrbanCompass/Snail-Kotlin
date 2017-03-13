@@ -33,6 +33,17 @@ class ObservableTests {
     }
 
     @Test
+    fun testNextNull() {
+        val unitSubject = Observable<Unit?>()
+        var gotIt = false
+        unitSubject.subscribe(next = {
+            gotIt = true
+        })
+        unitSubject.next(null)
+        assertEquals(true, gotIt)
+    }
+
+    @Test
     fun testDone() {
         subject?.next("1")
         subject?.next("2")

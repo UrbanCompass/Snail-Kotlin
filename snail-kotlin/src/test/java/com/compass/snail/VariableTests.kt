@@ -13,8 +13,9 @@ class VariableTests {
         subject.asObservable().subscribe(next = { events.add(it) })
         subject.value = "a"
         subject.value = "b"
-        assertEquals(events[0], "a")
-        assertEquals(events[1], "b")
+        assertEquals(events[0], null)
+        assertEquals(events[1], "a")
+        assertEquals(events[2], "b")
         assertEquals(subject.value, "b")
     }
 

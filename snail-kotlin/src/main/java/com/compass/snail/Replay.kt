@@ -17,6 +17,6 @@ open class Replay<T>(val threshold: Int) : Observable<T>() {
     }
 
     private fun replay(thread: EventThread?, handler: (Event<T>) -> Unit) {
-        values.forEach { notify(Subscriber(thread, handler), Event(next = it)) }
+        values.forEach { notify(Subscriber(thread, handler), Event(next = Next(it))) }
     }
 }
