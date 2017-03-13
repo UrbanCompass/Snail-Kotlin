@@ -18,7 +18,7 @@ open class Observable<T> : IObservable<T> {
     }
 
     override fun next(value: T) {
-        on(Event(next = value))
+        on(Event(next = Next(value)))
     }
 
     override fun error(error: Throwable) {
@@ -51,7 +51,7 @@ open class Observable<T> : IObservable<T> {
 
     protected fun createHandler(next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null): (Event<T>) -> Unit {
         return { event ->
-            event.next?.let { next?.invoke(it) }
+            event.next?.let { next?.invoke(it.value) }
             event.error?.let { error?.invoke(it) }
             event.done?.let { done?.invoke() }
         }
