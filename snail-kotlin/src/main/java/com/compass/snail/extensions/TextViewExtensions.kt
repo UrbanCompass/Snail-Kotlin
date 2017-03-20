@@ -13,10 +13,10 @@ inline val TextView.textChanged: Observable<String>
         val observable = Replay<String>(1)
         this.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                observable.next(charSequence.toString())
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                observable.next(editable.toString())
             }
-            override fun afterTextChanged(editable: Editable) { }
         })
         return observable
     }
