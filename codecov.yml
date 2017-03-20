@@ -1,0 +1,10 @@
+ignore:
+ - "snail-kotlin/src/main/java/com/compass/snail/extensions"
+ - "snail-kotlin/src/test"
+coverage:
+  status:
+    project:
+      default:
+        against: parent
+        target: auto
+        threshold: 90%
