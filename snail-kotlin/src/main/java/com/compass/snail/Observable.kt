@@ -4,6 +4,7 @@ package com.compass.snail
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 
 open class Observable<T> : IObservable<T> {
     var stoppedEvent: Event<T>? = null
@@ -69,6 +70,8 @@ open class Observable<T> : IObservable<T> {
         try {
             subscriber.eventHandler(event)
         } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("Snail Observable", "Removing subscriber $subscriber")
             subscribers.remove(subscriber)
         }
     }
