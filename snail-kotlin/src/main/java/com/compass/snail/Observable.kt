@@ -69,6 +69,8 @@ open class Observable<T> : IObservable<T> {
         try {
             subscriber.eventHandler(event)
         } catch (e: Exception) {
+            e.printStackTrace()
+            println("Removing subscriber $subscriber")
             subscribers.remove(subscriber)
         }
     }
