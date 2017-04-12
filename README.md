@@ -1,6 +1,6 @@
 # Snail-Kotlin 🐌 ![CircleCI](https://circleci.com/gh/UrbanCompass/Snail-Kotlin/tree/master.svg?style=shield&circle-token=02af7805c3430ec7945e0895b2108b4d9b348e85) [![codecov](https://codecov.io/gh/UrbanCompass/Snail-Kotlin/branch/master/graph/badge.svg)](https://codecov.io/gh/UrbanCompass/Snail-Kotlin) [![](https://jitpack.io/v/urbancompass/snail-kotlin.svg)](https://jitpack.io/#urbancompass/snail-kotlin)
 
-A light-weight observables framework, also available in [Swift](https://github.com/UrbanCompass/Snail)
+A lightweight observables framework, also available in [Swift](https://github.com/UrbanCompass/Snail)
 
 Download
 --------
