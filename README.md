@@ -16,7 +16,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.urbancompass:snail-kotlin:0.0.2'
+  compile 'com.github.urbancompass:snail-kotlin:x.x.x'
 }
 ```
 
