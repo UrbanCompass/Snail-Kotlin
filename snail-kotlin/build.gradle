@@ -12,11 +12,11 @@ ext {
 group='com.github.urbancompass'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.2"
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "0.0.1"
     }
