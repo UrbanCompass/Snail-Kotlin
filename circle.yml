@@ -6,8 +6,8 @@ test:
   override:
     - ./scripts/test.sh
   post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
-    - find . -type f -regex ".*/build/test-results/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
-    - mkdir -p $CIRCLE_TEST_REPORTS/lint/
-    - find . -type f -regex ".*/build/outputs/.*html" -exec cp {} $CIRCLE_TEST_REPORTS/lint/ \;
+    - mkdir -p $CIRCLE_ARTIFACTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*html" -exec cp {} $CIRCLE_ARTIFACTS/junit/ \;
+    - mkdir -p $CIRCLE_ARTIFACTS/lint/
+    - find . -type f -regex ".*/build/outputs/.*html" -exec cp {} $CIRCLE_ARTIFACTS/lint/ \;
     - bash <(curl -s https://codecov.io/bash)
