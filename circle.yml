@@ -1,6 +1,6 @@
 dependencies:
   pre:
-    - echo y | android update sdk --no-ui --all --filter "android-26","build-tools-26.0.0","tools-26.0.2"
+    - echo y | android update sdk --no-ui --all --filter "android-26","build-tools-26.0.0","tools"
 test:
   override:
     - ./scripts/test.sh
