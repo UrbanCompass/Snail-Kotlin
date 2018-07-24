@@ -1,12 +1,13 @@
-# Snail-Kotlin 🐌 ![CircleCI](https://www.bitrise.io/app/9064b20f3be78d27.svg?token=9q6cr3-Ugc1e56o1sjuYHA&branch=master) [![codecov](https://codecov.io/gh/UrbanCompass/Snail-Kotlin/branch/master/graph/badge.svg)](https://codecov.io/gh/UrbanCompass/Snail-Kotlin) [![](https://jitpack.io/v/urbancompass/snail-kotlin.svg)](https://jitpack.io/#urbancompass/snail-kotlin)
+# Snail-Kotlin 🐌 ![Bitrise](https://app.bitrise.io/app/9064b20f3be78d27.svg?token=9q6cr3-Ugc1e56o1sjuYHA) [![codecov](https://codecov.io/gh/UrbanCompass/Snail-Kotlin/branch/master/graph/badge.svg)](https://codecov.io/gh/UrbanCompass/Snail-Kotlin) [![](https://jitpack.io/v/urbancompass/snail-kotlin.svg)](https://jitpack.io/#urbancompass/snail-kotlin)
 
 A lightweight observables framework, also available in [Swift](https://github.com/UrbanCompass/Snail)
 
-Download
---------
+## Download
+
 You can download a jar from GitHub's [releases page](https://github.com/UrbanCompass/Snail-Kotlin/releases).
 
 Jitpack
+
 ```gradle
 allprojects {
  repositories {
@@ -21,6 +22,7 @@ dependencies {
 ```
 
 Or Maven:
+
 ```xml
 <dependency>
   <groupId>com.compass.snail</groupId>
@@ -104,11 +106,11 @@ You can specify which thread an observables will be notified on by using `.subsc
 
 There are 3 scenarios:
 
-1. You don't specify the thread. Your observer will be notified on the same thread as the observable published on.
+1.  You don't specify the thread. Your observer will be notified on the same thread as the observable published on.
 
-2. You specified `MAIN` thread AND the observable published on the `MAIN` thread. Your observer will be notified synchronously on the `MAIN` thread.
+2.  You specified `MAIN` thread AND the observable published on the `MAIN` thread. Your observer will be notified synchronously on the `MAIN` thread.
 
-3. You specified a thread. Your observer will be notified async on the specified thread.
+3.  You specified a thread. Your observer will be notified async on the specified thread.
 
 ### Examples
 
