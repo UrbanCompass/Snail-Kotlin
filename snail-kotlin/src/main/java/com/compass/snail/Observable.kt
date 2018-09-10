@@ -5,8 +5,10 @@ package com.compass.snail
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import java.util.concurrent.Semaphore
 
 open class Observable<T> : IObservable<T> {
+    private var isStopped = 0
     var stoppedEvent: Event<T>? = null
     var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
@@ -18,8 +20,16 @@ open class Observable<T> : IObservable<T> {
         subscribers.add(Subscriber(thread, createHandler(next, error, done)))
     }
 
+    override fun on(thread: EventThread): Observable<T> {
+        val observable = Observable<T>()
+        subscribe(thread, { observable.next(it) }, { observable.error(it) }, { observable.done() })
+        return observable
+    }
+
     override fun next(value: T) {
-        on(Event(next = Next(value)))
+        if (isStopped == 0) {
+            on(Event(next = Next(value)))
+        }
     }
 
     override fun error(error: Throwable) {
@@ -74,5 +84,41 @@ open class Observable<T> : IObservable<T> {
             Log.e("Snail Observable", "Removing subscriber $subscriber")
             subscribers.remove(subscriber)
         }
+    }
+
+    override fun block(): Pair<T?, Throwable?> {
+        var result: T? = null
+        var error: Throwable? = null
+        val semaphore = Semaphore(0)
+
+        subscribe(next = {
+            result = it
+            semaphore.release()
+        }, error = {
+            error = it
+            semaphore.release()
+        }, done = {
+            semaphore.release()
+        })
+
+        semaphore.acquire()
+
+        return Pair(result, error)
+    }
+
+    override fun throttle(delay: Double): Observable<T> {
+        val observable = Observable<T>()
+        val scheduler = Scheduler(delay)
+        scheduler.start()
+
+        var next: T? = null
+        scheduler.event.subscribe(next = {
+            val event = next ?: return@subscribe
+            observable.next(event)
+            next = null
+        })
+
+        subscribe(EventThread.OBSERVABLE, { next = it }, { observable.error(it) }, { observable.done() })
+        return observable
     }
 }
