@@ -2,10 +2,15 @@
 
 package com.compass.snail
 
+import android.os.Looper
+import kotlinx.coroutines.experimental.async
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+
 
 class ObservableTests {
     private var subject: Observable<String>? = null
@@ -88,5 +93,30 @@ class ObservableTests {
         subject?.next("1")
         assertNotNull(more.firstOrNull())
         assertEquals(strings?.firstOrNull(), more.firstOrNull())
+    }
+
+    @Test
+    fun testFiresStoppedEventOnSubscribeIfStopped() {
+        subject?.error(RuntimeException())
+
+        var oldError: Exception? = null
+        subject?.subscribe(error = { error -> oldError = error as? Exception })
+        assert(oldError is RuntimeException)
+    }
+
+    @Test
+    fun testSubscribeOnMainThread() {
+        var future = CompletableFuture<Boolean>()
+
+        val testThread = Thread.currentThread()
+
+        async {
+            subject?.subscribe(thread = EventThread.MAIN, next = {
+                future.complete(Thread.currentThread() != testThread)
+            })
+            subject?.next("1")
+        }
+
+        assert(future.get(2, TimeUnit.SECONDS))
     }
 }
