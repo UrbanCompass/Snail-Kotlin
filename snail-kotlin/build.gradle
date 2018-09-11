@@ -13,7 +13,6 @@ group='com.github.urbancompass'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.0'
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 26
@@ -35,9 +34,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines"
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines"
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines"
+    testImplementation 'junit:junit:4.12'
 }
