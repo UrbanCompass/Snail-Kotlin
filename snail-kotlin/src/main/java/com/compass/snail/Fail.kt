@@ -2,8 +2,10 @@
 
 package com.compass.snail
 
+import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+
 open class Fail<T>(private val _error: Throwable) : Observable<T>() {
-    override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
-        notify(Subscriber(thread, createHandler(next, error, done)), Event(error = _error))
+    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher? , next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+        notify(Subscriber(dispatcher, createHandler(next, error, done)), Event(error = _error))
     }
 }

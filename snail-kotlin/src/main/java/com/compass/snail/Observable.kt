@@ -2,28 +2,28 @@
 
 package com.compass.snail
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.Semaphore
 
 open class Observable<T> : IObservable<T> {
     private var isStopped = 0
-    var stoppedEvent: Event<T>? = null
-    var subscribers: MutableList<Subscriber<T>> = mutableListOf()
+    private var stoppedEvent: Event<T>? = null
+    private var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
-    override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
         stoppedEvent?.let {
-            notify(Subscriber(thread, createHandler(next, error, done)), it)
+            notify(Subscriber(dispatcher, createHandler(next, error, done)), it)
             return
         }
-        subscribers.add(Subscriber(thread, createHandler(next, error, done)))
+        subscribers.add(Subscriber(dispatcher, createHandler(next, error, done)))
     }
 
-    override fun on(thread: EventThread): Observable<T> {
+    override fun on(dispatcher: ExecutorCoroutineDispatcher): Observable<T> {
         val observable = Observable<T>()
-        subscribe(thread, { observable.next(it) }, { observable.error(it) }, { observable.done() })
+        subscribe(dispatcher, { observable.next(it) }, { observable.error(it) }, { observable.done() })
         return observable
     }
 
@@ -70,11 +70,14 @@ open class Observable<T> : IObservable<T> {
     }
 
     fun notify(subscriber: Subscriber<T>, event: Event<T>) {
-        if (subscriber.thread == EventThread.MAIN) {
-            fireOnMain { safeNotify(subscriber, event) }
-        } else {
-            safeNotify(subscriber, event)
+        subscriber.dispatcher?.let {
+            launch(it) {
+                safeNotify(subscriber, event)
+            }
+            return
         }
+
+        safeNotify(subscriber, event)
     }
 
     private fun safeNotify(subscriber: Subscriber<T>, event: Event<T>) {
@@ -87,20 +90,7 @@ open class Observable<T> : IObservable<T> {
         }
     }
 
-    private fun fireOnMain(block: () -> Unit) {
-        if (Looper.myLooper() == null || Looper.getMainLooper() == null) {
-            launch { block() }
-            return
-        }
-
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            block()
-        } else {
-            Handler(Looper.getMainLooper()).post { block() }
-        }
-    }
-
-    override fun block(): Pair<T?, Throwable?> {
+    override fun block(): BlockResult<T> {
         var result: T? = null
         var error: Throwable? = null
         val semaphore = Semaphore(0)
@@ -117,22 +107,23 @@ open class Observable<T> : IObservable<T> {
 
         semaphore.acquire()
 
-        return Pair(result, error)
+        return BlockResult(result, error)
     }
 
-    override fun throttle(delay: Double): Observable<T> {
+    override fun throttle(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
-        val scheduler = Scheduler(delay)
+        val scheduler = Scheduler(delayMs)
         scheduler.start()
 
         var next: T? = null
         scheduler.event.subscribe(next = {
-            val event = next ?: return@subscribe
-            observable.next(event)
-            next = null
+            next?.let {
+                observable.next(it)
+                next = null
+            }
         })
 
-        subscribe(EventThread.OBSERVABLE, { next = it }, { observable.error(it) }, { observable.done() })
+        subscribe(next = { next = it }, error = { observable.error(it) }, done = { observable.done() })
         return observable
     }
 }
