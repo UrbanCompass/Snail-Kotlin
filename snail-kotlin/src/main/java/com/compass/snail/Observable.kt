@@ -5,6 +5,7 @@ package com.compass.snail
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.Semaphore
 
 open class Observable<T> : IObservable<T> {
@@ -70,7 +71,7 @@ open class Observable<T> : IObservable<T> {
 
     fun notify(subscriber: Subscriber<T>, event: Event<T>) {
         if (subscriber.thread == EventThread.MAIN) {
-            Handler(Looper.getMainLooper()).post { safeNotify(subscriber, event) }
+            fireOnMain { safeNotify(subscriber, event) }
         } else {
             safeNotify(subscriber, event)
         }
@@ -83,6 +84,19 @@ open class Observable<T> : IObservable<T> {
             e.printStackTrace()
             Log.e("Snail Observable", "Removing subscriber $subscriber")
             subscribers.remove(subscriber)
+        }
+    }
+
+    private fun fireOnMain(block: () -> Unit) {
+        if (Looper.myLooper() == null || Looper.getMainLooper() == null) {
+            launch { block() }
+            return
+        }
+
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            block()
+        } else {
+            Handler(Looper.getMainLooper()).post { block() }
         }
     }
 

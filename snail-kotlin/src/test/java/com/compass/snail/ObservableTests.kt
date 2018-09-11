@@ -3,11 +3,12 @@
 package com.compass.snail
 
 import android.os.Looper
-import net.jodah.concurrentunit.Waiter
+import kotlinx.coroutines.experimental.async
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
 
@@ -105,26 +106,17 @@ class ObservableTests {
 
     @Test
     fun testSubscribeOnMainThread() {
-        val waiter = Waiter()
+        var future = CompletableFuture<Boolean>()
 
-//        thread {
-            subject?.subscribe(next = {
-                waiter.assertEquals(true, Looper.myLooper() == Looper.getMainLooper())
-                waiter.resume()
+        val testThread = Thread.currentThread()
+
+        async {
+            subject?.subscribe(thread = EventThread.MAIN, next = {
+                future.complete(Thread.currentThread() != testThread)
             })
             subject?.next("1")
-            waiter.await(2, TimeUnit.SECONDS)
-//        }
-        //waiter.await()//(2, TimeUnit.SECONDS)
-//        val latch = CountDownLatch(1)
-//        latch.await(2, TimeUnit.SECONDS)
-//
-//        thread {
-//            subject?.subscribe(EventThread.MAIN, next = {
-//                assertEquals(true, Looper.myLooper() != Looper.getMainLooper())
-//                latch.countDown()
-//            })
-//            subject?.next("1")
-//        }
+        }
+
+        assert(future.get(2, TimeUnit.SECONDS))
     }
 }
