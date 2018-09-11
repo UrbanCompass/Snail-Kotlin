@@ -2,12 +2,14 @@
 
 package com.compass.snail
 
-open class Replay<T>(val threshold: Int) : Observable<T>() {
+import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+
+open class Replay<T>(private val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
-    override fun subscribe(thread: EventThread?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
-        super.subscribe(thread, next, error, done)
-        replay(thread, createHandler(next, error, done))
+    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+        super.subscribe(dispatcher, next, error, done)
+        replay(dispatcher, createHandler(next, error, done))
     }
 
     override fun next(value: T) {
@@ -16,7 +18,7 @@ open class Replay<T>(val threshold: Int) : Observable<T>() {
         super.next(value)
     }
 
-    private fun replay(thread: EventThread?, handler: (Event<T>) -> Unit) {
-        values.forEach { notify(Subscriber(thread, handler), Event(next = Next(it))) }
+    private fun replay(dispatcher: ExecutorCoroutineDispatcher?, handler: (Event<T>) -> Unit) {
+        values.forEach { notify(Subscriber(dispatcher, handler), Event(next = Next(it))) }
     }
 }

@@ -3,9 +3,12 @@
 package com.compass.snail
 
 import android.os.Looper
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.DefaultDispatcher
+import kotlinx.coroutines.experimental.asCoroutineDispatcher
 import kotlinx.coroutines.experimental.async
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import kotlinx.coroutines.experimental.delay
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CompletableFuture
@@ -105,18 +108,65 @@ class ObservableTests {
     }
 
     @Test
-    fun testSubscribeOnMainThread() {
+    fun testSubscribeOnRequestedDispatcher() {
         var future = CompletableFuture<Boolean>()
 
-        val testThread = Thread.currentThread()
-
         async {
-            subject?.subscribe(thread = EventThread.MAIN, next = {
-                future.complete(Thread.currentThread() != testThread)
+            subject?.subscribe(dispatcher = CommonPool, next = {
+                future.complete(Thread.currentThread().name.toLowerCase().contains("commonpool"))
             })
             subject?.next("1")
         }
 
         assert(future.get(2, TimeUnit.SECONDS))
+    }
+
+    @Test
+    fun testBlockSuccess() {
+        val result = Just(1).block()
+        assertEquals(result.value, 1)
+        assertNull(result.error)
+    }
+
+    @Test
+    fun testBlockFail() {
+        val result = Fail<Unit>(RuntimeException()).block()
+        assertNull(result.value)
+        assert(result.error is RuntimeException)
+    }
+
+    @Test
+    fun testBlockDone() {
+        val observable = Observable<String>()
+        observable.done()
+        val result = observable.block()
+        assertNull(result.value)
+        assertNull(result.error)
+    }
+
+    @Test
+    fun testThrottle() {
+        val observable = Observable<String>()
+        var received = mutableListOf<String>()
+
+        var future = CompletableFuture<Boolean>()
+        val delayMs = 100L
+
+        async {
+            delay(delayMs)
+            future.complete(true)
+        }
+
+        observable.throttle(delayMs).subscribe( next = {
+            received.add(it)
+        })
+
+        observable.next("1")
+        observable.next("2")
+
+        future.get(2, TimeUnit.SECONDS)
+
+        assertEquals(received.count(), 1)
+        assertEquals(received.first(), "2")
     }
 }
