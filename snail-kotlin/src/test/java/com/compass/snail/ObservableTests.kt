@@ -2,10 +2,7 @@
 
 package com.compass.snail
 
-import android.os.Looper
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.asCoroutineDispatcher
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import org.junit.Assert.*

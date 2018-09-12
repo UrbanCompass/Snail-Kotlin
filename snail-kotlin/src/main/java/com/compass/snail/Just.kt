@@ -2,10 +2,10 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 
 open class Just<T>(private val value: T) : Observable<T>() {
-    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
         notify(Subscriber(dispatcher, createHandler(next, error, done)), Event(next = Next(value)))
         notify(Subscriber(dispatcher, createHandler(next, error, done)), Event(done = true))
     }
