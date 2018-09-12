@@ -3,8 +3,7 @@
 package com.compass.snail
 
 import android.util.Log
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.launch
 import java.util.concurrent.Semaphore
 
@@ -13,7 +12,7 @@ open class Observable<T> : IObservable<T> {
     private var stoppedEvent: Event<T>? = null
     private var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
-    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
         stoppedEvent?.let {
             notify(Subscriber(dispatcher, createHandler(next, error, done)), it)
             return
@@ -21,7 +20,7 @@ open class Observable<T> : IObservable<T> {
         subscribers.add(Subscriber(dispatcher, createHandler(next, error, done)))
     }
 
-    override fun on(dispatcher: ExecutorCoroutineDispatcher): Observable<T> {
+    override fun on(dispatcher: CoroutineDispatcher): Observable<T> {
         val observable = Observable<T>()
         subscribe(dispatcher, { observable.next(it) }, { observable.error(it) }, { observable.done() })
         return observable

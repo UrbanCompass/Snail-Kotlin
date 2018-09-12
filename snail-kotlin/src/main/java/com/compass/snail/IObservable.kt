@@ -2,12 +2,11 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 
 interface IObservable<T> {
-    fun subscribe(dispatcher: ExecutorCoroutineDispatcher? = null, next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null)
-    fun on(dispatcher: ExecutorCoroutineDispatcher): Observable<T>
+    fun subscribe(dispatcher: CoroutineDispatcher? = null, next: ((T) -> Unit)? = null, error: ((Throwable) -> Unit)? = null, done: (() -> Unit)? = null)
+    fun on(dispatcher: CoroutineDispatcher): Observable<T>
     fun next(value: T)
     fun error(error: Throwable)
     fun done()

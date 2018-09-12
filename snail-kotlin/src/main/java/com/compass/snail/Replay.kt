@@ -2,12 +2,12 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.experimental.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.experimental.CoroutineDispatcher
 
 open class Replay<T>(private val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
-    override fun subscribe(dispatcher: ExecutorCoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
         super.subscribe(dispatcher, next, error, done)
         replay(dispatcher, createHandler(next, error, done))
     }
@@ -18,7 +18,7 @@ open class Replay<T>(private val threshold: Int) : Observable<T>() {
         super.next(value)
     }
 
-    private fun replay(dispatcher: ExecutorCoroutineDispatcher?, handler: (Event<T>) -> Unit) {
+    private fun replay(dispatcher: CoroutineDispatcher?, handler: (Event<T>) -> Unit) {
         values.forEach { notify(Subscriber(dispatcher, handler), Event(next = Next(it))) }
     }
 }
