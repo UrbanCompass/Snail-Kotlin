@@ -27,7 +27,7 @@ Or Maven:
 <dependency>
   <groupId>com.compass.snail</groupId>
   <artifactId>snail</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.9</version>
   <type>pom</type>
 </dependency>
 ```
@@ -42,9 +42,9 @@ val observable = Observable<thing>()
 
 ```kotlin
 observable.subscribe(
-        next = { thing in ... }, // do something with thing
-        error = { error in ... }, // do something with error
-        done = { ... } // do something when it's done
+    next = { thing in ... }, // do something with thing
+    error = { error in ... }, // do something with error
+    done = { ... } // do something when it's done
 )
 ```
 
@@ -100,24 +100,24 @@ val n = 5
 let replay = Replay(n) // replays the last N events when a new observer subscribes
 ```
 
-## Threads
+## Dispatchers
 
-You can specify which thread an observables will be notified on by using `.subscribe(thread: <desired thread>)`. If you don't specify, then the observable will be notified on the same thread that the observable published on.
+You can specify which dispatcher an observables will be notified on by using `.subscribe(dispatcher: <desired dispatcher>)`. If you don't specify, then the observable will be notified on the same dispatcher that the observable published on.
 
 There are 3 scenarios:
 
-1.  You don't specify the thread. Your observer will be notified on the same thread as the observable published on.
+1.  You don't specify the dispatcher. Your observer will be notified on the same dispatcher as the observable published on.
 
-2.  You specified `MAIN` thread AND the observable published on the `MAIN` thread. Your observer will be notified synchronously on the `MAIN` thread.
+2.  You specified `UI` dispatcher AND the observable published on the `UI` dispatcher. Your observer will be notified synchronously on the `UI` dispatcher.
 
-3.  You specified a thread. Your observer will be notified async on the specified thread.
+3.  You specified a dispatcher. Your observer will be notified async on the specified dispatcher.
 
 ### Examples
 
-Subscribing on `EventThread.MAIN`
+Subscribing on `UI`
 
 ```kotlin
-observable.subscribe(EventThread.MAIN,
-    next = { thing in ... }
-)
+observable.subscribe(UI, next = {
+    // do stuff with it...
+})
 ```
