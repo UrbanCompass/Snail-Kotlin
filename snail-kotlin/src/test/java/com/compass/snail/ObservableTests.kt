@@ -5,6 +5,7 @@ package com.compass.snail
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.newSingleThreadContext
 import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -116,6 +117,21 @@ class ObservableTests {
             subject?.next("1")
         }
 
+        assert(future.get(2, TimeUnit.SECONDS))
+    }
+
+    @Test
+    fun testOnDispatcher() {
+        var future = CompletableFuture<Boolean>()
+
+        val threadName = "testThread"
+        val dispatcher = newSingleThreadContext(threadName)
+        val observable = Observable<Boolean>()
+        observable.on(dispatcher).subscribe(next = {
+            future.complete(Thread.currentThread().name.contains(threadName))
+        })
+
+        observable.next(true)
         assert(future.get(2, TimeUnit.SECONDS))
     }
 
