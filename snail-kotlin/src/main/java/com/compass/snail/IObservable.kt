@@ -11,6 +11,6 @@ interface IObservable<T> {
     fun error(error: Throwable)
     fun done()
     fun removeSubscribers()
-    fun block(): BlockResult<T>
+    suspend fun block(): BlockResult<T>
     fun throttle(delayMs: Long): Observable<T>
 }
