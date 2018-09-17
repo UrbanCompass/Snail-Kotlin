@@ -89,7 +89,7 @@ open class Observable<T> : IObservable<T> {
         }
     }
 
-    override fun block(): BlockResult<T> {
+    override suspend fun block(): BlockResult<T> {
         var result: T? = null
         var error: Throwable? = null
         val semaphore = Semaphore(0)

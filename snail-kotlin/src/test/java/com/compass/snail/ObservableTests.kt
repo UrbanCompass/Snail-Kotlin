@@ -5,6 +5,7 @@ package com.compass.snail
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -120,14 +121,18 @@ class ObservableTests {
 
     @Test
     fun testBlockSuccess() {
-        val result = Just(1).block()
+        val result = runBlocking {
+            Just(1).block()
+        }
         assertEquals(result.value, 1)
         assertNull(result.error)
     }
 
     @Test
     fun testBlockFail() {
-        val result = Fail<Unit>(RuntimeException()).block()
+        val result = runBlocking {
+            Fail<Unit>(RuntimeException()).block()
+        }
         assertNull(result.value)
         assert(result.error is RuntimeException)
     }
@@ -136,7 +141,9 @@ class ObservableTests {
     fun testBlockDone() {
         val observable = Observable<String>()
         observable.done()
-        val result = observable.block()
+        val result = runBlocking {
+            observable.block()
+        }
         assertNull(result.value)
         assertNull(result.error)
     }
