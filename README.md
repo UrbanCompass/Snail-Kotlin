@@ -108,16 +108,16 @@ There are 3 scenarios:
 
 1.  You don't specify the dispatcher. Your observer will be notified on the same dispatcher as the observable published on.
 
-2.  You specified `UI` dispatcher AND the observable published on the `UI` dispatcher. Your observer will be notified synchronously on the `UI` dispatcher.
+2.  You specified `Main` dispatcher AND the observable published on the `Main` dispatcher. Your observer will be notified synchronously on the `Main` dispatcher.
 
 3.  You specified a dispatcher. Your observer will be notified async on the specified dispatcher.
 
 ### Examples
 
-Subscribing on `UI`
+Subscribing on `Main`
 
 ```kotlin
-observable.subscribe(UI, next = {
+observable.subscribe(Dispatchers.Main, next = {
     // do stuff with it...
 })
 ```
