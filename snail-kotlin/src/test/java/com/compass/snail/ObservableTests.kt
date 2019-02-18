@@ -11,8 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import java.lang.IllegalArgumentException
-import java.security.InvalidParameterException
+import kotlin.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
