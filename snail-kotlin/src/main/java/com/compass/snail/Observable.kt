@@ -6,6 +6,7 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
@@ -147,12 +148,14 @@ open class Observable<T> : IObservable<T> {
         return observable
     }
 
-    override fun skip(first: UInt): Observable<T> {
+    override fun skip(first: Int): Observable<T> {
         val observable = Observable<T>()
-        var count = first.toInt()
+        var count = first
         subscribe(next = {
             if (count == 0) {
                 observable.next(it)
+            } else if (count < 0) {
+                observable.error(IllegalArgumentException("Parameter value must be nonzero"))
             }
             count = max(count - 1, 0)
         }, error = {

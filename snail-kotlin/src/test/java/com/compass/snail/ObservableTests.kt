@@ -11,6 +11,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import java.lang.IllegalArgumentException
+import java.security.InvalidParameterException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -196,7 +198,7 @@ class ObservableTests {
         val observable = Observable<String>()
         var received = mutableListOf<String>()
 
-        observable.skip(2.toUInt()).subscribe(next = {
+        observable.skip(2).subscribe(next = {
             received.add(it)
 
             assertEquals(received.count(), 1)
@@ -206,5 +208,17 @@ class ObservableTests {
         observable.next("1")
         observable.next("2")
         observable.next("3")
+    }
+
+    @Test
+    fun testSkipFirstInvalidArgument() {
+        val observable = Observable<String>()
+
+        observable.skip(-1).subscribe(error = {
+            assert(it.localizedMessage == "Parameter value must be nonzero")
+            assert(it is IllegalArgumentException)
+        })
+
+        observable.next("1")
     }
 }
