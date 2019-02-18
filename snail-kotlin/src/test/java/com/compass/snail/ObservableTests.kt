@@ -2,11 +2,12 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.newSingleThreadContext
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -108,11 +109,11 @@ class ObservableTests {
 
     @Test
     fun testSubscribeOnRequestedDispatcher() {
-        var future = CompletableFuture<Boolean>()
+        val future = CompletableFuture<Boolean>()
 
-        async {
-            subject?.subscribe(dispatcher = CommonPool, next = {
-                future.complete(Thread.currentThread().name.toLowerCase().contains("commonpool"))
+        GlobalScope.async {
+            subject?.subscribe(dispatcher = Dispatchers.Default, next = {
+                future.complete(Thread.currentThread().name.toLowerCase().contains("default"))
             })
             subject?.next("1")
         }
@@ -122,10 +123,10 @@ class ObservableTests {
 
     @Test
     fun testOnDispatcher() {
-        var future = CompletableFuture<Boolean>()
+        val future = CompletableFuture<Boolean>()
 
         val threadName = "testThread"
-        val dispatcher = newSingleThreadContext(threadName)
+        val dispatcher = newFixedThreadPoolContext(1, threadName)
         val observable = Observable<Boolean>()
         observable.on(dispatcher).subscribe(next = {
             future.complete(Thread.currentThread().name.contains(threadName))
@@ -167,12 +168,12 @@ class ObservableTests {
     @Test
     fun testThrottle() {
         val observable = Observable<String>()
-        var received = mutableListOf<String>()
+        val received = mutableListOf<String>()
 
-        var future = CompletableFuture<Boolean>()
+        val future = CompletableFuture<Boolean>()
         val delayMs = 100L
 
-        async {
+        GlobalScope.async {
             delay(delayMs)
             future.complete(true)
         }

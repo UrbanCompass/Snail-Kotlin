@@ -3,8 +3,9 @@
 package com.compass.snail
 
 import android.util.Log
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.Semaphore
 
 open class Observable<T> : IObservable<T> {
@@ -70,7 +71,7 @@ open class Observable<T> : IObservable<T> {
 
     fun notify(subscriber: Subscriber<T>, event: Event<T>) {
         subscriber.dispatcher?.let {
-            launch(it) {
+            GlobalScope.launch(it) {
                 safeNotify(subscriber, event)
             }
             return
