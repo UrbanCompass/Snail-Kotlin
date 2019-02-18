@@ -2,6 +2,6 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 
 data class Subscriber<in T>(val dispatcher: CoroutineDispatcher?, val eventHandler: (Event<T>) -> Unit)
