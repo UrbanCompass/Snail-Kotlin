@@ -14,4 +14,5 @@ interface IObservable<T> {
     suspend fun block(): BlockResult<T>
     fun throttle(delayMs: Long): Observable<T>
     fun debounce(delayMs: Long): Observable<T>
+    fun skip(first: UInt): Observable<T>
 }

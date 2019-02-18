@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.Semaphore
+import kotlin.math.max
 
 open class Observable<T> : IObservable<T> {
     private var isStopped = 0
@@ -143,6 +144,23 @@ open class Observable<T> : IObservable<T> {
             next = it
             scheduler.start()
         }, error = { observable.error(it) }, done = { observable.done() })
+        return observable
+    }
+
+    override fun skip(first: UInt): Observable<T> {
+        val observable = Observable<T>()
+        var count = first.toInt()
+        subscribe(next = {
+            if (count == 0) {
+                observable.next(it)
+            }
+            count = max(count - 1, 0)
+        }, error = {
+            observable.error(it)
+        }, done = {
+            observable.done()
+        })
+
         return observable
     }
 }

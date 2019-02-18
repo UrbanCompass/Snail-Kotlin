@@ -190,4 +190,21 @@ class ObservableTests {
         assertEquals(received.count(), 1)
         assertEquals(received.first(), "2")
     }
+
+    @Test
+    fun testSkipFirst() {
+        val observable = Observable<String>()
+        var received = mutableListOf<String>()
+
+        observable.skip(2.toUInt()).subscribe(next = {
+            received.add(it)
+
+            assertEquals(received.count(), 1)
+            assertEquals(received.first(), "3")
+        })
+
+        observable.next("1")
+        observable.next("2")
+        observable.next("3")
+    }
 }
