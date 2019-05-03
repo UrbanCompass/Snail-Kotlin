@@ -14,8 +14,8 @@ group='com.github.urbancompass'
 android {
     compileSdkVersion 28
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 26
+        minSdkVersion 14
+        targetSdkVersion 28
         versionCode 1
         versionName "0.0.2"
     }
