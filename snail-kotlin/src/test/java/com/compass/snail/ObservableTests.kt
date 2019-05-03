@@ -2,16 +2,10 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.newFixedThreadPoolContext
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import kotlin.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -188,8 +182,8 @@ class ObservableTests {
 
         future.get(2, TimeUnit.SECONDS)
 
-        assertEquals(received.count(), 1)
-        assertEquals(received.first(), "2")
+        assertEquals(1, received.count())
+        assertEquals("2", received.first())
     }
 
     @Test
@@ -200,8 +194,8 @@ class ObservableTests {
         observable.skip(2).subscribe(next = {
             received.add(it)
 
-            assertEquals(received.count(), 1)
-            assertEquals(received.first(), "3")
+            assertEquals(1, received.count())
+            assertEquals("3", received.first())
         })
 
         observable.next("1")
