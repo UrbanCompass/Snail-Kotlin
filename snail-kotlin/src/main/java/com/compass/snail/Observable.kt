@@ -3,9 +3,7 @@
 package com.compass.snail
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.IllegalArgumentException
 import java.util.concurrent.Semaphore
 import kotlin.math.max
@@ -114,16 +112,15 @@ open class Observable<T> : IObservable<T> {
 
     override fun throttle(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
-        val scheduler = Scheduler(delayMs)
-        scheduler.start()
-
         var next: T? = null
-        scheduler.event.subscribe(next = {
+
+        GlobalScope.launch {
+            delay(delayMs)
             next?.let {
                 observable.next(it)
                 next = null
             }
-        })
+        }
 
         subscribe(next = { next = it }, error = { observable.error(it) }, done = { observable.done() })
         return observable
