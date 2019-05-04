@@ -126,25 +126,6 @@ open class Observable<T> : IObservable<T> {
         return observable
     }
 
-    override fun debounce(delayMs: Long): Observable<T> {
-        val observable = Observable<T>()
-        val scheduler = Scheduler(delayMs)
-
-        var next: T? = null
-        scheduler.event.subscribe(next = {
-            next?.let {
-                observable.next(it)
-                next = null
-            }
-        })
-
-        subscribe(next = {
-            next = it
-            scheduler.start()
-        }, error = { observable.error(it) }, done = { observable.done() })
-        return observable
-    }
-
     override fun skip(first: Int): Observable<T> {
         val observable = Observable<T>()
         var count = first
