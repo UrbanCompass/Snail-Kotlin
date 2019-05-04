@@ -116,6 +116,7 @@ class ObservableTests {
         assert(future.get(2, TimeUnit.SECONDS))
     }
 
+    @ObsoleteCoroutinesApi
     @Test
     fun testOnDispatcher() {
         val future = CompletableFuture<Boolean>()
