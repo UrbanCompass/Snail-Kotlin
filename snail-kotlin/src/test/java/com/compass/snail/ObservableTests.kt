@@ -7,6 +7,8 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
 
 
@@ -116,15 +118,15 @@ class ObservableTests {
         assert(future.get(2, TimeUnit.SECONDS))
     }
 
-    @ObsoleteCoroutinesApi
     @Test
     fun testOnDispatcher() {
         val future = CompletableFuture<Boolean>()
 
-        val threadName = "testThread"
-        val dispatcher = newFixedThreadPoolContext(1, threadName)
+        val threadName = "pool-1-thread-1"
+        val dispatcher = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
         val observable = Observable<Boolean>()
         observable.on(dispatcher).subscribe(next = {
+            print(Thread.currentThread().name)
             future.complete(Thread.currentThread().name.contains(threadName))
         })
 
