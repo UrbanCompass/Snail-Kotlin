@@ -2,12 +2,7 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.newFixedThreadPoolContext
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -122,6 +117,7 @@ class ObservableTests {
         assert(future.get(2, TimeUnit.SECONDS))
     }
 
+    @ObsoleteCoroutinesApi
     @Test
     fun testOnDispatcher() {
         val future = CompletableFuture<Boolean>()
