@@ -3,10 +3,7 @@
 package com.compass.snail
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlin.IllegalArgumentException
+import kotlinx.coroutines.*
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
@@ -114,16 +111,15 @@ open class Observable<T> : IObservable<T> {
 
     override fun throttle(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
-        val scheduler = Scheduler(delayMs)
-        scheduler.start()
 
         var next: T? = null
-        scheduler.event.subscribe(next = {
+        GlobalScope.launch {
+            delay(delayMs)
             next?.let {
                 observable.next(it)
                 next = null
             }
-        })
+        }
 
         subscribe(next = { next = it }, error = { observable.error(it) }, done = { observable.done() })
         return observable
@@ -131,19 +127,19 @@ open class Observable<T> : IObservable<T> {
 
     override fun debounce(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
-        val scheduler = Scheduler(delayMs)
-
-        var next: T? = null
-        scheduler.event.subscribe(next = {
-            next?.let {
-                observable.next(it)
-                next = null
-            }
-        })
+        var next: T?
+        var lastTimeout: Job? = null
 
         subscribe(next = {
             next = it
-            scheduler.start()
+            lastTimeout?.cancel()
+            lastTimeout = GlobalScope.async {
+                delay(delayMs)
+                next?.let {
+                    observable.next(it)
+                    next = null
+                }
+            }
         }, error = { observable.error(it) }, done = { observable.done() })
         return observable
     }

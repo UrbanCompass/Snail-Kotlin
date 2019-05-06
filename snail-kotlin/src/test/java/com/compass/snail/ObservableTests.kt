@@ -209,7 +209,9 @@ class ObservableTests {
             observable.next("2")
             GlobalScope.async {
                 delay(delayMs / 3)
+                observable.next("3")
                 GlobalScope.async {
+                    delay(delayMs)
                     future.complete(true)
                 }
             }
