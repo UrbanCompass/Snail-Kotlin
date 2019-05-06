@@ -131,7 +131,7 @@ open class Observable<T> : IObservable<T> {
 
         subscribe(next = {
             next = it
-            GlobalScope.async {
+            GlobalScope.launch {
                 delay(delayMs)
                 next?.let {
                     observable.next(it)
