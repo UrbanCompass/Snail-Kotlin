@@ -111,15 +111,16 @@ open class Observable<T> : IObservable<T> {
 
     override fun throttle(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
+        val scheduler = Scheduler(delayMs)
+        scheduler.start()
 
         var next: T? = null
-        GlobalScope.launch {
-            delay(delayMs)
+        scheduler.event.subscribe(next = {
             next?.let {
                 observable.next(it)
                 next = null
             }
-        }
+        })
 
         subscribe(next = { next = it }, error = { observable.error(it) }, done = { observable.done() })
         return observable
