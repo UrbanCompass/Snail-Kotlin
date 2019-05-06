@@ -125,7 +125,6 @@ class ObservableTests {
         val dispatcher = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
         val observable = Observable<Boolean>()
         observable.on(dispatcher).subscribe(next = {
-            print(Thread.currentThread().name)
             future.complete(Thread.currentThread().name.contains(threadName))
         })
 
