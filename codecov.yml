@@ -7,4 +7,4 @@ coverage:
       default:
         against: parent
         target: auto
-        threshold: 90%
+        threshold: 1%
