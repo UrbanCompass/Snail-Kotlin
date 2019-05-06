@@ -6,7 +6,6 @@ import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import kotlin.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 

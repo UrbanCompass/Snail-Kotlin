@@ -128,12 +128,10 @@ open class Observable<T> : IObservable<T> {
     override fun debounce(delayMs: Long): Observable<T> {
         val observable = Observable<T>()
         var next: T?
-        var lastTimeout: Job? = null
 
         subscribe(next = {
             next = it
-            lastTimeout?.cancel()
-            lastTimeout = GlobalScope.async {
+            GlobalScope.async {
                 delay(delayMs)
                 next?.let {
                     observable.next(it)
