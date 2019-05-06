@@ -193,6 +193,37 @@ class ObservableTests {
     }
 
     @Test
+    fun testDebounce() {
+        val observable = Observable<String>()
+        val received = mutableListOf<String>()
+
+        val future = CompletableFuture<Boolean>()
+        val delayMs = 300L
+
+        observable.debounce(delayMs).subscribe( next = {
+            received.add(it)
+        })
+
+        GlobalScope.async {
+            delay(delayMs / 2)
+            observable.next("2")
+            GlobalScope.async {
+                delay(delayMs / 3)
+                GlobalScope.async {
+                    future.complete(true)
+                }
+            }
+        }
+
+        observable.next("1")
+
+        future.get(1, TimeUnit.SECONDS)
+
+        assertEquals(1, received.count())
+        assertEquals("3", received.first())
+    }
+
+    @Test
     fun testSkipFirst() {
         val observable = Observable<String>()
         var received = mutableListOf<String>()
