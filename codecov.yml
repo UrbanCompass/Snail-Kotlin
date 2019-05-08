@@ -3,8 +3,8 @@ ignore:
  - "snail-kotlin/src/test"
 coverage:
   status:
+    patch: no
     project:
       default:
         against: parent
         target: auto
-        threshold: 1%
