@@ -3,8 +3,9 @@
 package com.compass.snail
 
 import android.util.Log
-import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
@@ -133,7 +134,6 @@ open class Observable<T> : IObservable<T> {
 
         var next: T? = null
         scheduler.event.subscribe(next = {
-            print("${Date().time}\n")
             next?.let {
                 observable.next(it)
                 next = null

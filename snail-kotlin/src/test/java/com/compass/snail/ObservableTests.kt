@@ -193,17 +193,13 @@ class ObservableTests {
         val received = mutableListOf<String>()
 
         val future = CompletableFuture<Boolean>()
-        val delayMs = 300L
-
-        observable.debounce(delayMs).subscribe( next = {
-            received.add(it)
-        })
+        val delayMs = 200L
 
         GlobalScope.async {
             delay(delayMs / 2)
             observable.next("2")
             GlobalScope.async {
-                delay(delayMs / 3)
+                delay(delayMs / 2)
                 observable.next("3")
                 GlobalScope.async {
                     delay(delayMs)
@@ -211,6 +207,10 @@ class ObservableTests {
                 }
             }
         }
+
+        observable.debounce(delayMs).subscribe( next = {
+            received.add(it)
+        })
 
         observable.next("1")
 
