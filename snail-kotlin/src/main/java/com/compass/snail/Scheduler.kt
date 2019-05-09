@@ -2,9 +2,8 @@
 
 package com.compass.snail
 
-import java.util.Timer
+import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
-import kotlin.concurrent.timerTask
 
 internal class Scheduler(private val delay: Long, private val repeats: Boolean = true) {
     val event = Observable<Unit?>()
@@ -13,7 +12,7 @@ internal class Scheduler(private val delay: Long, private val repeats: Boolean =
     fun start() {
         stop()
         timer = Timer()
-        timer?.scheduleAtFixedRate(0, delay) {
+        timer?.scheduleAtFixedRate(delay, delay) {
             event.next(null)
             if (!repeats) {
                 stop()
