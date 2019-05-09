@@ -2,17 +2,12 @@
 
 package com.compass.snail
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.newFixedThreadPoolContext
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import kotlin.IllegalArgumentException
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -126,8 +121,8 @@ class ObservableTests {
     fun testOnDispatcher() {
         val future = CompletableFuture<Boolean>()
 
-        val threadName = "testThread"
-        val dispatcher = newFixedThreadPoolContext(1, threadName)
+        val threadName = "pool-1-thread-1"
+        val dispatcher = Executors.newFixedThreadPool(1).asCoroutineDispatcher()
         val observable = Observable<Boolean>()
         observable.on(dispatcher).subscribe(next = {
             future.complete(Thread.currentThread().name.contains(threadName))
@@ -190,6 +185,39 @@ class ObservableTests {
 
         assertEquals(received.count(), 1)
         assertEquals(received.first(), "2")
+    }
+
+    @Test
+    fun testDebounce() {
+        val observable = Observable<String>()
+        val received = mutableListOf<String>()
+
+        val future = CompletableFuture<Boolean>()
+        val delayMs = 200L
+
+        GlobalScope.async {
+            delay(delayMs / 2)
+            observable.next("2")
+            GlobalScope.async {
+                delay(delayMs / 2)
+                observable.next("3")
+                GlobalScope.async {
+                    delay(delayMs)
+                    future.complete(true)
+                }
+            }
+        }
+
+        observable.debounce(delayMs).subscribe( next = {
+            received.add(it)
+        })
+
+        observable.next("1")
+
+        future.get(1, TimeUnit.SECONDS)
+
+        assertEquals(1, received.count())
+        assertEquals("3", received.first())
     }
 
     @Test

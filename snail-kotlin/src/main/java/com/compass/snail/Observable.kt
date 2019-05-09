@@ -6,7 +6,6 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.IllegalArgumentException
 import java.util.concurrent.Semaphore
 import kotlin.math.max
 
