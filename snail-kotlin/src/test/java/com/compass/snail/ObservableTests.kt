@@ -97,8 +97,7 @@ class ObservableTests {
         assertEquals(1, listOfInt.size)
         assertEquals("1", listOfString[0])
         assertEquals(1, listOfInt[0])
-
-
+        
         intSubscriber?.let { subject?.removeSubscriber(it) }
         subject?.next("2")
         assertEquals(2, listOfString.size)
