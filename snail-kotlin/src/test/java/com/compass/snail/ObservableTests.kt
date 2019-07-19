@@ -86,6 +86,37 @@ class ObservableTests {
     }
 
     @Test
+    fun testRemoveSubscriber() {
+        val listOfString = mutableListOf<String>()
+        val listOfInt =  mutableListOf<Int>()
+        val stringSubscriber = subject?.subscribe(next = { listOfString.add(it) })
+        val intSubscriber = subject?.subscribe(next = { listOfInt.add(it.toInt()) })
+        subject?.next("1")
+
+        assertEquals(1, listOfString.size)
+        assertEquals(1, listOfInt.size)
+        assertEquals("1", listOfString[0])
+        assertEquals(1, listOfInt[0])
+
+
+        intSubscriber?.let { subject?.removeSubscriber(it) }
+        subject?.next("2")
+        assertEquals(2, listOfString.size)
+        assertEquals(1, listOfInt.size)
+        assertEquals("1", listOfString[0])
+        assertEquals("2", listOfString[1])
+        assertEquals(1, listOfInt[0])
+
+        stringSubscriber?.let { subject?.removeSubscriber(it) }
+        subject?.next("3")
+        assertEquals(2, listOfString.size)
+        assertEquals(1, listOfInt.size)
+        assertEquals("1", listOfString[0])
+        assertEquals("2", listOfString[1])
+        assertEquals(1, listOfInt[0])
+    }
+
+    @Test
     fun testMultipleSubscribers() {
         val more = mutableListOf<String>()
         subject?.subscribe(next = { more.add(it) })
