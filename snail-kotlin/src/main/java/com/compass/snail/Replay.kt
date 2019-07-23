@@ -7,9 +7,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 open class Replay<T>(private val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
-    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
-        super.subscribe(dispatcher, next, error, done)
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?): Subscriber<T> {
         replay(dispatcher, createHandler(next, error, done))
+        return super.subscribe(dispatcher, next, error, done)
     }
 
     override fun next(value: T) {

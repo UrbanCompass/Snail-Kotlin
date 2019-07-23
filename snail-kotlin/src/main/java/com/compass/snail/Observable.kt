@@ -14,12 +14,14 @@ open class Observable<T> : IObservable<T> {
     private var stoppedEvent: Event<T>? = null
     private var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
-    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) {
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) : Subscriber<T> {
+        val subscriber = Subscriber(dispatcher, createHandler(next, error, done))
         stoppedEvent?.let {
-            notify(Subscriber(dispatcher, createHandler(next, error, done)), it)
-            return
+            notify(subscriber, it)
+            return subscriber
         }
-        subscribers.add(Subscriber(dispatcher, createHandler(next, error, done)))
+        subscribers.add(subscriber)
+        return subscriber
     }
 
     override fun on(dispatcher: CoroutineDispatcher): Observable<T> {
@@ -44,6 +46,10 @@ open class Observable<T> : IObservable<T> {
 
     override fun removeSubscribers() {
         subscribers.clear()
+    }
+
+    override fun removeSubscriber(subscriber: Subscriber<T>) {
+        subscribers.remove(subscriber)
     }
 
     private fun on(event: Event<T>) {
