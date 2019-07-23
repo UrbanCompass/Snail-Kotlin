@@ -2,12 +2,13 @@
 
 package com.compass.snail
 
+import com.compass.snail.disposer.Disposable
 import kotlinx.coroutines.CoroutineDispatcher
 
 open class Replay<T>(private val threshold: Int) : Observable<T>() {
     private var values: MutableList<T> = mutableListOf()
 
-    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?): Subscriber<T> {
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?): Disposable {
         replay(dispatcher, createHandler(next, error, done))
         return super.subscribe(dispatcher, next, error, done)
     }
@@ -19,6 +20,6 @@ open class Replay<T>(private val threshold: Int) : Observable<T>() {
     }
 
     private fun replay(dispatcher: CoroutineDispatcher?, handler: (Event<T>) -> Unit) {
-        values.forEach { notify(Subscriber(dispatcher, handler), Event(next = Next(it))) }
+        values.forEach { notify(Subscriber(dispatcher, handler, this), Event(next = Next(it))) }
     }
 }
