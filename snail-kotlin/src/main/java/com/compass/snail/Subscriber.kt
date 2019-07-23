@@ -2,6 +2,12 @@
 
 package com.compass.snail
 
+import com.compass.snail.disposer.Disposable
 import kotlinx.coroutines.CoroutineDispatcher
 
-data class Subscriber<in T>(val dispatcher: CoroutineDispatcher?, val eventHandler: (Event<T>) -> Unit)
+class Subscriber<T>(val dispatcher: CoroutineDispatcher?, val eventHandler: (Event<T>) -> Unit, val owner: Observable<T>) : Disposable {
+    override fun dispose() {
+        owner.removeSubscriber(this)
+    }
+}
+

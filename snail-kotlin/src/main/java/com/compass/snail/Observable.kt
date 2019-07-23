@@ -3,6 +3,7 @@
 package com.compass.snail
 
 import android.util.Log
+import com.compass.snail.disposer.Disposable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,8 +15,8 @@ open class Observable<T> : IObservable<T> {
     private var stoppedEvent: Event<T>? = null
     private var subscribers: MutableList<Subscriber<T>> = mutableListOf()
 
-    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?) : Subscriber<T> {
-        val subscriber = Subscriber(dispatcher, createHandler(next, error, done))
+    override fun subscribe(dispatcher: CoroutineDispatcher?, next: ((T) -> Unit)?, error: ((Throwable) -> Unit)?, done: (() -> Unit)?): Disposable {
+        val subscriber = Subscriber(dispatcher, createHandler(next, error, done), this)
         stoppedEvent?.let {
             notify(subscriber, it)
             return subscriber
@@ -48,7 +49,7 @@ open class Observable<T> : IObservable<T> {
         subscribers.clear()
     }
 
-    override fun removeSubscriber(subscriber: Subscriber<T>) {
+    override fun removeSubscriber(subscriber: Disposable) {
         subscribers.remove(subscriber)
     }
 
