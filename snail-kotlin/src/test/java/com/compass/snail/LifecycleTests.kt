@@ -7,6 +7,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.compass.snail.disposer.disposeBy
 import com.compass.snail.disposer.onDestroy
+import com.compass.snail.disposer.onPause
+import com.compass.snail.disposer.onStart
+import com.compass.snail.disposer.onStop
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -33,7 +36,7 @@ class LifecycleTests {
     }
 
     @Test
-    fun testRemoveSubscriber() {
+    fun testOnDestroy() {
         lifecycle.markState(Lifecycle.State.CREATED)
         val listOfString = mutableListOf<String>()
         val listOfInt = mutableListOf<Int>()
@@ -62,5 +65,27 @@ class LifecycleTests {
         Assert.assertEquals(2, listOfInt2[1])
 
         intSubscriber?.let { subject?.removeSubscriber(it) }
+    }
+
+    @Test
+    fun testOnPause() {
+        lifecycle.markState(Lifecycle.State.RESUMED)
+        val listOfString = mutableListOf<String>()
+        subject?.subscribe(next = { listOfString.add(it) })?.disposeBy(lifecycle.onPause)
+
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        subject?.next("1")
+        Assert.assertEquals(0, listOfString.size)
+    }
+
+    @Test
+    fun testOnStop() {
+        lifecycle.markState(Lifecycle.State.STARTED)
+        val listOfString = mutableListOf<String>()
+        subject?.subscribe(next = { listOfString.add(it) })?.disposeBy(lifecycle.onStop)
+
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        subject?.next("1")
+        Assert.assertEquals(0, listOfString.size)
     }
 }
