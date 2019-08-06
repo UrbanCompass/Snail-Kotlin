@@ -2,7 +2,6 @@
 
 package com.compass.snail
 
-import android.util.Log
 import com.compass.snail.disposer.Disposable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.GlobalScope
@@ -93,7 +92,6 @@ open class Observable<T> : IObservable<T> {
             subscriber.eventHandler(event)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("Snail Observable", "Removing subscriber $subscriber")
             subscribers.remove(subscriber)
         }
     }
