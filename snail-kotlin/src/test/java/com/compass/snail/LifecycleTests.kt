@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleRegistry
 import com.compass.snail.disposer.disposeBy
 import com.compass.snail.disposer.onDestroy
 import com.compass.snail.disposer.onPause
-import com.compass.snail.disposer.onStart
 import com.compass.snail.disposer.onStop
 import org.junit.Assert
 import org.junit.Before
