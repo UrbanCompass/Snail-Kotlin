@@ -21,17 +21,6 @@ dependencies {
 }
 ```
 
-Or Maven:
-
-```xml
-<dependency>
-  <groupId>com.compass.snail</groupId>
-  <artifactId>snail</artifactId>
-  <version>0.0.9</version>
-  <type>pom</type>
-</dependency>
-```
-
 ## Creating Observables
 
 ```kotlin
