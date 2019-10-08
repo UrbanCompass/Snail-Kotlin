@@ -45,31 +45,34 @@ class ReplayTests {
     @Test
     fun testMultiThreadedBehavior() {
         val subject = Replay<Int>(1)
-
         var a = 0
         var b = 0
+
         subject.subscribe(next = {
-            a += it
+            a = it
         })
         subject.subscribe(next = {
-            b += it
+            b = it
         })
 
         val latch = CountDownLatch(2)
         thread {
-            while (a < 100) {
-                subject.next(1)
+            for (i in 1..100) {
+                subject.next(i)
             }
             latch.countDown()
         }
         thread {
-            while (b < 100) {
-                subject.next(1)
+            for (i in 1..100) {
+                subject.next(i)
             }
             latch.countDown()
         }
-        latch.await(2000, TimeUnit.SECONDS)
+        latch.await(1000, TimeUnit.SECONDS)
 
         subject.removeSubscribers()
+
+        assertEquals(100, a)
+        assertEquals(100, b)
     }
 }
