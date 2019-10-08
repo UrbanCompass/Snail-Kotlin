@@ -5,6 +5,9 @@ package com.compass.snail
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class ReplayTests {
     private var subject: Replay<String>? = null
@@ -37,5 +40,36 @@ class ReplayTests {
         assertEquals("1", a[0])
         assertEquals("2", b[0])
         assertEquals(2, b.size)
+    }
+
+    @Test
+    fun testMultiThreadedBehavior() {
+        val subject = Replay<Int>(1)
+
+        var a = 0
+        var b = 0
+        subject.subscribe(next = {
+            a += it
+        })
+        subject.subscribe(next = {
+            b += it
+        })
+
+        val latch = CountDownLatch(2)
+        thread {
+            while (a < 100) {
+                subject.next(1)
+            }
+            latch.countDown()
+        }
+        thread {
+            while (b < 100) {
+                subject.next(1)
+            }
+            latch.countDown()
+        }
+        latch.await(2000, TimeUnit.SECONDS)
+
+        subject.removeSubscribers()
     }
 }
