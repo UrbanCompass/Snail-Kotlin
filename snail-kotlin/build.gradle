@@ -6,7 +6,7 @@ apply plugin: 'jacoco-android'
 ext {
     PUBLISH_GROUP_ID = 'com.compass.snail'
     PUBLISH_ARTIFACT_ID = 'snail'
-    PUBLISH_VERSION = '0.0.2'
+    PUBLISH_VERSION = '0.2.0'
 }
 
 group='com.github.urbancompass'
@@ -17,7 +17,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1
-        versionName "0.0.2"
+        versionName "0.2.0"
     }
     buildTypes {
         release {
