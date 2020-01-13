@@ -17,6 +17,6 @@ interface IObservable<T> {
     fun throttle(delayMs: Long): Observable<T>
     fun debounce(delayMs: Long): Observable<T>
     fun skip(first: Int): Observable<T>
-    fun <T, U> Observable<T>.map(mappingFunction: (T) -> U): Observable<U>
+    fun <U> map(mappingFunction: (T) -> U): Observable<U>
     fun merge(observables: List<Observable<T>>): Observable<T>
 }

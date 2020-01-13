@@ -171,7 +171,7 @@ open class Observable<T> : IObservable<T> {
         return observable
     }
 
-    override fun <T, U> Observable<T>.map(mappingFunction: (T) -> U): Observable<U> {
+    override fun <U> map(mappingFunction: (T) -> U): Observable<U> {
         val observable = Observable<U>()
 
         this.subscribe(next = { unmapped ->
