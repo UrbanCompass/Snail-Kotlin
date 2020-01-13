@@ -189,4 +189,24 @@ open class Observable<T> : IObservable<T> {
 
         return observable
     }
+
+    override fun merge(observables: List<Observable<T>>): Observable<T> {
+        val latest = Observable<T>()
+
+        observables.forEach {
+            it.forward(latest)
+        }
+
+        return latest
+    }
+
+    private fun forward(observable: Observable<T>) {
+        subscribe(next = {
+            observable.on(Event(next = Next(it)))
+        }, error = {
+            observable.on(Event(error = it))
+        }, done = {
+            observable.on(Event(done = true))
+        })
+    }
 }
