@@ -170,4 +170,23 @@ open class Observable<T> : IObservable<T> {
 
         return observable
     }
+
+    override fun <T, U> Observable<T>.map(mappingFunction: (T) -> U): Observable<U> {
+        val observable = Observable<U>()
+
+        this.subscribe(next = { unmapped ->
+            try {
+                val mapped: U = mappingFunction(unmapped)
+                observable.next(mapped)
+            } catch (e: Throwable) {
+                observable.error(e)
+            }
+        }, error = {
+            observable.error(it)
+        }, done = {
+            observable.done()
+        })
+
+        return observable
+    }
 }
